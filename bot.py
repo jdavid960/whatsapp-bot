@@ -35,7 +35,7 @@ def bot():
         "sunday": "🧘 Reflexión + 🚴 Ciclismo suave"
     }
 
-    # Canciones de guitarra por nivel
+    # Tutoriales de guitarra
     canciones_guitarra = {
         "fácil": {
             "nombre": "Lamento Boliviano – Enanitos Verdes",
@@ -66,15 +66,24 @@ def bot():
         }
     }
 
-    # Comandos
-    if "rutina mañana" in incoming_msg:
-        msg.body("🌅 Rutina de la mañana (4:00 am – 4:20 am):\n" + "\n".join(
-            [f"{day.capitalize()}: {actividad}" for day, actividad in rutina_mañana.items()]
-        ))
-    elif "rutina noche" in incoming_msg:
-        msg.body("🌙 Rutina de la noche (8:45 pm – 10:00 pm):\n" + "\n".join(
-            [f"{day.capitalize()}: {actividad}" for day, actividad in rutina_noche.items()]
-        ))
+    # Comando: mañana
+    if "mañana" in incoming_msg:
+        actividad = rutina_mañana.get(today, "Descanso activo")
+        msg.body(f"🌅 Rutina de la mañana (4:00 am – 4:20 am):\n{actividad}\n💬 Frase: “Hoy no se trata de intensidad, sino de constancia.”")
+
+    # Comando: noche
+    elif "noche" in incoming_msg:
+        actividad = rutina_noche.get(today, "Descanso emocional")
+        mensaje = f"🌙 Rutina de la noche (8:45 pm – 10:00 pm):\n{actividad}"
+
+        # Si hoy hay guitarra, muestra submenú
+        if "guitarra" in actividad.lower():
+            mensaje += "\n🎸 Hoy toca guitarra. Escribe:\n- guitarra fácil\n- guitarra intermedio\n- guitarra avanzado"
+
+        mensaje += "\n💬 Frase: “Code and strum!”"
+        msg.body(mensaje)
+
+    # Submenús de guitarra
     elif "guitarra fácil" in incoming_msg:
         c = canciones_guitarra["fácil"]
         msg.body(f"🎸 Nivel fácil:\n{c['nombre']}\n{c['descripcion']}\n🔗 {c['link']}")
@@ -87,17 +96,9 @@ def bot():
     elif "guitarra avanzado" in incoming_msg:
         c = canciones_guitarra["avanzado"]
         msg.body(f"🎸 Nivel avanzado:\n{c['nombre']}\n{c['descripcion']}\n🔗 {c['link']}")
-    elif "auto mañana" in incoming_msg:
-        actividad = rutina_mañana.get(today, "Descanso activo")
-        msg.body(f"🌅 Buenos días, Juan\nHoy toca: {actividad}\n💬 Frase: “Hoy no se trata de intensidad, sino de constancia.”")
-    elif "auto noche" in incoming_msg:
-        actividad = rutina_noche.get(today, "Descanso emocional")
-        tutorial = ""
-        if "guitarra" in actividad.lower():
-            tutorial = "🎸 Tutorial: https://www.youtube.com/watch?v=bflRZEZPdQg"
-        msg.body(f"🌙 Hora de tu rutina nocturna, Juan\nHoy toca: {actividad}\n{tutorial}\n💬 Frase: “Code and strum!”")
+
     else:
-        msg.body("Hola Juan 👋 Escribe:\n- 'rutina mañana' para tu entrenamiento\n- 'rutina noche' para tus hobbies\n- 'guitarra fácil/intermedio/avanzado' para practicar 🎸")
+        msg.body("Hola Juan 👋 Escribe:\n- 'mañana' para tu rutina física\n- 'noche' para tu rutina de hobbies")
 
     return str(resp)
 
