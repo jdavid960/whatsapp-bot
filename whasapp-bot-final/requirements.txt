@@ -1,4 +1,0 @@
-Flask==2.3.2
-twilio==8.6.0
-
-# Versión final lista para Render
